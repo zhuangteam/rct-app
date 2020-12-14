@@ -10,7 +10,7 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import {
-  AccountCircle,
+  AccountCircleTwoTone,
   Close,
   Visibility,
   VisibilityOff,
@@ -20,7 +20,10 @@ import Axios from "axios";
 import "./login.scss";
 
 function login(username: string, password: string) {
-  return Axios.get("/api/login.json", { params: { username, password } });
+  return Axios.post(
+    "http://rok.zx.cn/user/login",
+    JSON.stringify({ username, password })
+  );
 }
 
 export default function Login() {
@@ -33,9 +36,9 @@ export default function Login() {
       <FormControl fullWidth variant="outlined">
         <InputLabel>账号</InputLabel>
         <OutlinedInput
-          endAdornment={<AccountCircle />}
-          labelWidth={30}
-          rowsMax={6}
+          endAdornment={<AccountCircleTwoTone />}
+          labelWidth={31}
+          inputProps={{ maxLength: 16 }}
           onChange={(event) =>
             setAccount({ ...account, username: event.target.value })
           }
@@ -57,8 +60,8 @@ export default function Login() {
               </IconButton>
             </InputAdornment>
           }
-          labelWidth={30}
-          rowsMax={6}
+          labelWidth={31}
+          inputProps={{ maxLength: 16 }}
           onChange={(event) =>
             setAccount({ ...account, password: event.target.value })
           }
@@ -71,10 +74,7 @@ export default function Login() {
         onClick={() => {
           login(account.username, account.password).then((rsp) => {
             const data = rsp.data;
-            if (
-              data.code === 0 &&
-              JSON.stringify(data.data) === JSON.stringify(account)
-            ) {
+            if (data.code === 0) {
               setSuccess(true);
             }
           });
@@ -85,7 +85,7 @@ export default function Login() {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={success}
-        autoHideDuration={6000}
+        autoHideDuration={2000}
         onClose={() => setSuccess(false)}
         TransitionComponent={(props) => <Slide {...props} direction="left" />}
         action={
